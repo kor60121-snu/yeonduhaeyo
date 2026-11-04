@@ -47,7 +47,7 @@ npm test
 
 ## 배포
 
-GitHub 저장소의 `main` 브랜치를 Vercel 프로젝트 `yeonduhaeyo`에 연결합니다. 이후 main에 push하면 다시 배포됩니다. 빌드 명령은 `npm run build`, 정적 출력 폴더는 `public`입니다. `/api/scores`는 정적 파일이 아닌 Node.js 함수로 실행됩니다.
+GitHub 저장소 `kor60121-snu/yeonduhaeyo`의 `main` 브랜치가 Vercel 프로젝트 `yeonduhaeyo`에 연결되어 있습니다. main에 push하면 운영 사이트 `https://yeonduhaeyo.vercel.app`에 자동 배포됩니다. 빌드 명령은 `npm run build`, 정적 출력 폴더는 `public`입니다. `/api/scores`는 정적 파일이 아닌 Node.js 함수로 실행됩니다.
 
 Vercel Marketplace에서 연결된 Upstash를 유지해야 기기 간 데이터 공유가 작동합니다. `.env.local`과 `.vercel`은 Git에 올리지 않습니다. 플랜 사용 한도에 도달하면 Vercel/Upstash 대시보드에서 사용량과 플랜을 확인하세요.
 
