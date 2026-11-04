@@ -7,3 +7,5 @@
 /* The full map, including Jeju, stays visible at the base zoom. */
 .map-scroll{max-height:none}
 .mobile-map-hint{display:none}@media(max-width:780px){.mobile-map-hint{display:block;margin:0;padding:0 20px 15px;font-size:9px;color:#8a9b77}.bottom-banner>div:nth-child(2){min-width:160px}.bottom-banner button{margin-left:53px}.bottom-banner{gap:14px}}
+/* Name/score cards are independent touch targets, including beyond a border. */
+.map-region-label{cursor:pointer;touch-action:manipulation}.map-region-label .region-label-bg{pointer-events:all}.map-region-label:hover .region-label-bg,.map-region-label:focus-visible .region-label-bg,.map-region-label.selected .region-label-bg{stroke:#577d36;stroke-width:1.8;fill:#f8fcee}.map-region-label:focus-visible{outline:none}

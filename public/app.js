@@ -10,6 +10,16 @@ const state = {
 let toastTimer, flushTimer, polling = false, geometry = [];
 const meter = document.createElement('canvas').getContext('2d');
 const svgLabels = [];
+// City cards may cross a nearby boundary so their names and counts stay readable.
+const mainCityLabels = {
+  seoul: [363, 308, 92, 60],
+  incheon: [271, 334, 84, 60],
+  daegu: [700, 737, 92, 60],
+  ulsan: [828, 796, 92, 60],
+  busan: [800, 888, 92, 60],
+  sejong: [422, 566, 72, 50],
+  daejeon: [455, 620, 78, 50],
+};
 
 function svgElement(tag, attributes = {}, content) {
   const node = document.createElementNS(svgNS, tag);
@@ -82,7 +92,7 @@ async function fetchSnapshot() {
 
 function selectRegion(id) {
   state.selected = REGIONS.find(region => region.id === id) ?? null;
-  document.querySelectorAll('.map-region').forEach(node => node.classList.toggle('selected', node.dataset.region === id));
+  document.querySelectorAll('.map-region, .map-region-label').forEach(node => node.classList.toggle('selected', node.dataset.region === id));
   updateSelected();
 }
 
@@ -157,12 +167,13 @@ async function sendBatch(batch) {
 function makeRegion(region, geo, prefix = '') {
   const group = svgElement('g', {
     class: 'map-region', 'data-region': region.id, role: 'button', tabindex: '0',
+    'data-map-part': prefix ? 'inset' : 'main',
     'aria-label': `${region.name} 응원하기`,
   });
   group.append(svgElement('title', {}, `${region.name} · 누르면 응원 +1`));
   group.append(svgElement('path', { class: 'region-shape', d: geo.path, fill: '#fff' }));
-  const [x, y, w, h] = geo.label;
-  const label = svgElement('g', { 'aria-hidden': 'true' });
+  const [x, y, w, h] = (!prefix && mainCityLabels[region.id]) || geo.label;
+  const label = svgElement('g', { class: 'map-region-label', 'data-region': region.id, 'aria-hidden': 'true' });
   label.append(svgElement('rect', { class: 'region-label-bg', x, y, width: w, height: h, rx: Math.min(3, h * .08) }));
   const name = svgElement('text', {
     class: 'region-label-name', x: x + w / 2, y: y + h * .36, 'text-anchor': 'middle',
@@ -173,6 +184,13 @@ function makeRegion(region, geo, prefix = '') {
     'dominant-baseline': 'central', 'font-size': h * .36, 'data-count-for': region.id,
   }, '0');
   label.append(name, count);
+  // A card remains clickable even where it extends beyond its region's shape.
+  label.addEventListener('click', event => { event.stopPropagation(); cheer(region.id, event); });
+  label.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault(); event.stopPropagation(); cheer(region.id);
+    }
+  });
   group.append(label);
   svgLabels.push({ id: region.id, count, width: w * .86, fontSize: h * .36 });
   group.addEventListener('click', event => cheer(region.id, event));
@@ -223,20 +241,28 @@ async function drawMap() {
     if (!response.ok) throw new Error('map');
     geometry = await response.json();
     const map = $('#korea-map');
-    // Labels are geometrically inscribed in each region, including enlarged city maps.
+    const labelLayer = svgElement('g', { class: 'map-label-layer' });
     for (const region of REGIONS) {
       const geo = geometry.find(item => item.code === region.code);
-      map.append(makeRegion(region, geo));
+      const group = makeRegion(region, geo);
+      const label = group.querySelector('.map-region-label');
+      label.removeAttribute('aria-hidden');
+      label.setAttribute('role', 'button');
+      label.setAttribute('tabindex', '0');
+      label.setAttribute('aria-label', `${region.name} 응원하기`);
+      group.setAttribute('tabindex', '-1');
+      labelLayer.append(label);
+      map.append(group);
     }
     map.append(svgElement('text', { class: 'sea-label', x: 982, y: 420 }, '동해'));
     map.append(svgElement('text', { class: 'sea-label', x: 92, y: 930 }, '서해'));
     map.append(svgElement('text', { class: 'sea-label', x: 682, y: 1280 }, '남해'));
-    addInset(map, '수도권의 작은 응원', ['seoul', 'incheon'], { x: 24, y: 120, w: 240, h: 345 });
     addInset(map, '충청의 작은 응원', ['sejong', 'daejeon'], { x: 24, y: 500, w: 240, h: 345 });
-    addInset(map, '영남의 작은 응원', ['daegu', 'ulsan', 'busan'], { x: 928, y: 715, w: 248, h: 490 });
     addIslands(map, '울릉도 · 독도', 'gyeongbuk', { x: 945, y: 125, w: 225, h: 170, viewBox: '1180 300 270 160' });
     addIslands(map, '서해 도서 · 인천', 'incheon', { x: 24, y: 1010, w: 190, h: 180, viewBox: '-120 220 220 230' });
     map.append(svgElement('text', { class: 'map-caption', x: 250, y: 1420 }, '제주특별자치도'));
+    // Main-map cards sit above every region, so a neighboring path cannot intercept a tap.
+    map.append(labelLayer);
     $('#map-loading').remove();
     render();
     if (document.fonts?.ready) document.fonts.ready.then(render);
@@ -291,6 +317,10 @@ function render() {
       label.count.setAttribute('font-size', currentSize * label.width / measured * .98);
     }
   }
+  document.querySelectorAll('.map-label-layer .map-region-label').forEach(node => {
+    const region = REGIONS.find(item => item.id === node.dataset.region);
+    node.setAttribute('aria-label', `${region.name}, ${format.format(counts[region.id])}번의 응원. 누르면 1 증가`);
+  });
   updateSelected();
   renderRankings(ranked, total);
 }
