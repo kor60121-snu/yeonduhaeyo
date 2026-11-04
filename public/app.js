@@ -11,25 +11,25 @@ const state = {
 let toastTimer, flushTimer, polling = false, geometry = [];
 const meter = document.createElement('canvas').getContext('2d');
 const svgLabels = [];
-// Every region gets the same large card, positioned to avoid neighboring cards.
+// Equal-size cards leave at least half of the small regions' color visible.
 const labelCardSize = { width: 140, height: 76 };
 const mainLabelCenters = {
-  seoul: [440, 320],
-  incheon: [290, 330],
+  seoul: [440, 278],
+  incheon: [290, 285],
   gyeonggi: [450, 412],
   gangwon: [680, 300],
-  chungbuk: [610, 480],
+  chungbuk: [620, 480],
   chungnam: [330, 550],
-  sejong: [475, 578],
-  daejeon: [490, 664],
+  sejong: [475, 520],
+  daejeon: [490, 704],
   jeonbuk: [450, 785],
   'jeonnam-gwangju': [375, 987],
   gyeongbuk: [800, 550],
-  daegu: [720, 746],
-  ulsan: [885, 835],
-  busan: [830, 935],
+  daegu: [720, 700],
+  ulsan: [885, 783],
+  busan: [830, 980],
   gyeongnam: [610, 870],
-  jeju: [302, 1362],
+  jeju: [302, 1300],
 };
 
 function svgElement(tag, attributes = {}, content) {
