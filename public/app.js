@@ -10,15 +10,25 @@ const state = {
 let toastTimer, flushTimer, polling = false, geometry = [];
 const meter = document.createElement('canvas').getContext('2d');
 const svgLabels = [];
-// City cards may cross a nearby boundary so their names and counts stay readable.
-const mainCityLabels = {
-  seoul: [363, 308, 92, 60],
-  incheon: [271, 334, 84, 60],
-  daegu: [700, 737, 92, 60],
-  ulsan: [828, 796, 92, 60],
-  busan: [800, 888, 92, 60],
-  sejong: [422, 566, 72, 50],
-  daejeon: [455, 620, 78, 50],
+// Every region gets the same large card, positioned to avoid neighboring cards.
+const labelCardSize = { width: 140, height: 76 };
+const mainLabelCenters = {
+  seoul: [440, 320],
+  incheon: [290, 330],
+  gyeonggi: [450, 412],
+  gangwon: [680, 300],
+  chungbuk: [610, 480],
+  chungnam: [330, 550],
+  sejong: [475, 578],
+  daejeon: [490, 664],
+  jeonbuk: [450, 785],
+  'jeonnam-gwangju': [375, 987],
+  gyeongbuk: [800, 550],
+  daegu: [720, 746],
+  ulsan: [885, 835],
+  busan: [830, 935],
+  gyeongnam: [610, 870],
+  jeju: [302, 1362],
 };
 
 function svgElement(tag, attributes = {}, content) {
@@ -164,15 +174,17 @@ async function sendBatch(batch) {
   }
 }
 
-function makeRegion(region, geo, prefix = '') {
+function makeRegion(region, geo) {
   const group = svgElement('g', {
     class: 'map-region', 'data-region': region.id, role: 'button', tabindex: '0',
-    'data-map-part': prefix ? 'inset' : 'main',
+    'data-map-part': 'main',
     'aria-label': `${region.name} 응원하기`,
   });
   group.append(svgElement('title', {}, `${region.name} · 누르면 응원 +1`));
   group.append(svgElement('path', { class: 'region-shape', d: geo.path, fill: '#fff' }));
-  const [x, y, w, h] = (!prefix && mainCityLabels[region.id]) || geo.label;
+  const [centerX, centerY] = mainLabelCenters[region.id];
+  const { width: w, height: h } = labelCardSize;
+  const x = centerX - w / 2, y = centerY - h / 2;
   const label = svgElement('g', { class: 'map-region-label', 'data-region': region.id, 'aria-hidden': 'true' });
   label.append(svgElement('rect', { class: 'region-label-bg', x, y, width: w, height: h, rx: Math.min(3, h * .08) }));
   const name = svgElement('text', {
@@ -198,27 +210,6 @@ function makeRegion(region, geo, prefix = '') {
     if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); cheer(region.id); }
   });
   return group;
-}
-
-function addInset(map, title, ids, { x, y, w, h }) {
-  map.append(svgElement('rect', { class: 'inset-bg', x, y, width: w, height: h, rx: 10 }));
-  map.append(svgElement('text', { class: 'inset-title', x: x + 16, y: y + 26 }, title));
-  map.append(svgElement('text', { class: 'inset-subtitle', x: x + 16, y: y + 45 }, '지역 확대 · 누르면 응원 +1'));
-  const cellHeight = (h - 64) / ids.length;
-  ids.forEach((id, index) => {
-    const region = REGIONS.find(item => item.id === id);
-    const geo = geometry.find(item => item.code === region.code);
-    const [minX, minY, maxX, maxY] = geo.bounds;
-    const pw = maxX - minX, ph = maxY - minY;
-    const padding = Math.max(pw, ph) * .08;
-    const inset = svgElement('svg', {
-      x: x + 12, y: y + 55 + index * cellHeight, width: w - 24, height: cellHeight - 9,
-      viewBox: `${minX - padding} ${minY - padding} ${pw + padding * 2} ${ph + padding * 2}`,
-      'aria-label': `${region.name} 확대 지도`,
-    });
-    inset.append(makeRegion(region, geo, `inset-${id}`));
-    map.append(inset);
-  });
 }
 
 function addIslands(map, title, regionId, { x, y, w, h, viewBox }) {
@@ -257,7 +248,6 @@ async function drawMap() {
     map.append(svgElement('text', { class: 'sea-label', x: 982, y: 420 }, '동해'));
     map.append(svgElement('text', { class: 'sea-label', x: 92, y: 930 }, '서해'));
     map.append(svgElement('text', { class: 'sea-label', x: 682, y: 1280 }, '남해'));
-    addInset(map, '충청의 작은 응원', ['sejong', 'daejeon'], { x: 24, y: 500, w: 240, h: 345 });
     addIslands(map, '울릉도 · 독도', 'gyeongbuk', { x: 945, y: 125, w: 225, h: 170, viewBox: '1180 300 270 160' });
     addIslands(map, '서해 도서 · 인천', 'incheon', { x: 24, y: 1010, w: 190, h: 180, viewBox: '-120 220 220 230' });
     map.append(svgElement('text', { class: 'map-caption', x: 250, y: 1420 }, '제주특별자치도'));
