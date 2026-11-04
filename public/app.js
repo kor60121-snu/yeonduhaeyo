@@ -3,6 +3,7 @@ import { REGIONS, emptyCounts, rankRegions, regionColor } from './regions.js';
 const $ = selector => document.querySelector(selector);
 const format = new Intl.NumberFormat('ko-KR');
 const svgNS = 'http://www.w3.org/2000/svg';
+const MIN_ZOOM = 0.5, MAX_ZOOM = 3, ZOOM_STEP = 0.25;
 const state = {
   day: null, counts: emptyCounts(), ready: false, selected: null,
   resetAt: null, clockOffset: 0, queue: new Map(), batches: new Map(), zoom: 1,
@@ -339,11 +340,14 @@ function changeTab(name, focus = false) {
 }
 
 function setZoom(next) {
-  state.zoom = Math.max(1, Math.min(3, next));
+  // 100% fits the map container on every screen, including narrow phones.
+  state.zoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, next));
   $('#map-canvas').style.width = `${state.zoom * 100}%`;
   $('#zoom-reset').textContent = `${Math.round(state.zoom * 100)}%`;
-  $('#zoom-out').disabled = state.zoom <= 1;
-  $('#zoom-in').disabled = state.zoom >= 3;
+  $('#zoom-reset').setAttribute('aria-label', `현재 ${Math.round(state.zoom * 100)}%. 전국 지도 보기 100%로 맞추기`);
+  $('#zoom-out').disabled = state.zoom <= MIN_ZOOM;
+  $('#zoom-in').disabled = state.zoom >= MAX_ZOOM;
+  if (state.zoom <= 1) $('#map-scroll').scrollLeft = 0;
 }
 
 function updateCountdown() {
@@ -374,8 +378,8 @@ $('#ranking-list').addEventListener('click', event => {
   changeTab('map');
   $('#map-tab').scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
-$('#zoom-in').addEventListener('click', () => setZoom(state.zoom + .5));
-$('#zoom-out').addEventListener('click', () => setZoom(state.zoom - .5));
+$('#zoom-in').addEventListener('click', () => setZoom(state.zoom + ZOOM_STEP));
+$('#zoom-out').addEventListener('click', () => setZoom(state.zoom - ZOOM_STEP));
 $('#zoom-reset').addEventListener('click', () => { setZoom(1); $('#map-scroll').scrollTo({ top: 0, left: 0 }); });
 $('#how-button').addEventListener('click', () => $('#how-dialog').showModal());
 $('.dialog-close').addEventListener('click', () => $('#how-dialog').close());

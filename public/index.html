@@ -32,8 +32,8 @@
         <div class="workspace-tabs" role="tablist" aria-label="대항전 보기"><button class="tab active" role="tab" id="map-tab" aria-controls="map-panel" aria-selected="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m2 4 5-2 6 2 5-2v14l-5 2-6-2-5 2V4Z"/><path d="M7 2v14m6-12v14"/></svg>지도</button><button class="tab" role="tab" id="ranking-tab" aria-controls="ranking-panel" aria-selected="false" tabindex="-1"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M7 17V8h6v9M2 17v-5h5m6-1h5v6M1 17h18M8 4l2-2 2 2"/></svg>오늘의 랭킹</button><span class="tab-note">전국 16개 지역의 작은 경쟁</span></div>
 
         <section id="map-panel" role="tabpanel" aria-labelledby="map-tab">
-          <div class="map-toolbar"><div><b>어디를 응원할까요?</b><span>지역을 누르면 응원이 쌓여요</span></div><div class="zoom-controls" aria-label="지도 확대 조절"><button id="zoom-out" aria-label="지도 축소">−</button><button id="zoom-reset" aria-label="지도 원래 크기">100%</button><button id="zoom-in" aria-label="지도 확대">+</button></div></div>
-          <p class="mobile-map-hint">지도를 좌우로 밀어 다른 지역도 만나 보세요 ↔</p>
+          <div class="map-toolbar"><div><b>어디를 응원할까요?</b><span>100%에서 전국 보기 · +로 확대</span></div><div class="zoom-controls" aria-label="지도 확대 조절"><button id="zoom-out" aria-label="지도 축소">−</button><button id="zoom-reset" aria-label="전국 지도 보기 100%로 맞추기">100%</button><button id="zoom-in" aria-label="지도 확대">+</button></div></div>
+          <p class="mobile-map-hint">100%는 전국 보기예요. +로 확대하면 지역을 더 쉽게 눌러요.</p>
           <div class="map-scroll" id="map-scroll"><div class="map-canvas" id="map-canvas"><div class="map-loading" id="map-loading"><span class="loading-leaf">❧</span><p>대한민국을 펼치는 중이에요</p></div><svg id="korea-map" viewBox="0 0 1200 1440" aria-label="대한민국 지역별 클릭 지도"></svg></div></div>
           <div class="map-bottom"><div class="color-key"><span>응원이 쌓일수록</span><i class="color-gradient"></i><span>더 진한 연두</span></div><span>모든 지역의 네모를 눌러 응원해요 +1</span></div>
         </section>
