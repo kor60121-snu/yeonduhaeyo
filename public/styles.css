@@ -6,3 +6,4 @@
 
 /* The full map, including Jeju, stays visible at the base zoom. */
 .map-scroll{max-height:none}
+.mobile-map-hint{display:none}@media(max-width:780px){.mobile-map-hint{display:block;margin:0;padding:0 20px 15px;font-size:9px;color:#8a9b77}.bottom-banner>div:nth-child(2){min-width:160px}.bottom-banner button{margin-left:53px}.bottom-banner{gap:14px}}
