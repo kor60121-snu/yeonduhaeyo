@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ecf5df">
+  <meta name="description" content="한 번의 클릭으로 우리 지역을 연두로. 로그인 없이 함께하는 대한민국 지역 클릭 대항전. 매일 자정 새로운 경쟁이 시작돼요.">
+  <meta property="og:title" content="연두해요 — 우리 지역을 연두로">
+  <meta property="og:description" content="대한민국을 연두로 물들이는 가장 작은 응원. 우리 지역을 눌러 함께 1위를 만들어 보세요.">
+  <title>연두해요 · 우리 지역을 연두로</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">본문 바로가기</a>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="연두해요 홈"><svg class="brand-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M20 34V18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M20 24C7 24 4 17 5 8C16 7 22 12 20 24Z" fill="#a8d65f"/><path d="M20 19C20 8 27 4 36 5C36 15 30 21 20 19Z" fill="#466b34"/></svg><span>연두해요<span class="brand-dot">.</span></span></a>
+    <div class="header-right"><span class="daily-tag">매일 새롭게, 함께 연두</span><button class="icon-button" id="how-button" aria-label="참여 방법 보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .6-1.5 1-1.5 2.5M12 17h.01"/></svg></button></div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div><p class="eyebrow"><span class="live-dot"></span> 우리 동네 응원 대항전</p><h1>오늘, 우리 지역을<br><span class="hero-green">연두로 물들여요.</span><svg class="hero-leaf" viewBox="0 0 60 60" aria-hidden="true"><path d="M10 45C5 12 27 7 53 9C53 36 37 53 10 45Z" fill="#cce994"/><path d="M10 47 39 22" stroke="#6e983d" stroke-width="2.5" stroke-linecap="round"/></svg></h1><p class="hero-description">한 번의 클릭, 하나의 응원.<br class="mobile-only"> 우리 지역의 색을 함께 채워 보세요.</p></div>
+      <div class="today-card"><p><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M8 3v4m8-4v4M4 11h16"/></svg><span id="today-date">오늘의 대항전</span></p><div><span class="today-total" id="hero-total">—</span><span class="today-unit">번의 응원</span></div><span class="today-footnote">전국에서 모인 오늘의 마음</span></div>
+    </section>
+
+    <div class="competition-bar"><div><span class="live-dot"></span><b id="connection-text">연결 중</b><span class="competition-divider"></span><span>매일 00:00, 새로운 시작</span></div><span class="countdown"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="7.5"/><path d="M10 5v5l3 2"/></svg>다음 라운드까지 <b id="countdown">--:--:--</b></span></div>
+
+    <div class="workspace">
+      <section class="map-card" aria-label="지역 대항전">
+        <div class="workspace-tabs" role="tablist" aria-label="대항전 보기"><button class="tab active" role="tab" id="map-tab" aria-controls="map-panel" aria-selected="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m2 4 5-2 6 2 5-2v14l-5 2-6-2-5 2V4Z"/><path d="M7 2v14m6-12v14"/></svg>지도</button><button class="tab" role="tab" id="ranking-tab" aria-controls="ranking-panel" aria-selected="false" tabindex="-1"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M7 17V8h6v9M2 17v-5h5m6-1h5v6M1 17h18M8 4l2-2 2 2"/></svg>오늘의 랭킹</button><span class="tab-note">전국 16개 지역의 작은 경쟁</span></div>
+
+        <section id="map-panel" role="tabpanel" aria-labelledby="map-tab">
+          <div class="map-toolbar"><div><b>어디를 응원할까요?</b><span>지역을 누르면 응원이 쌓여요</span></div><div class="zoom-controls" aria-label="지도 확대 조절"><button id="zoom-out" aria-label="지도 축소">−</button><button id="zoom-reset" aria-label="지도 원래 크기">100%</button><button id="zoom-in" aria-label="지도 확대">+</button></div></div>
+          <div class="map-scroll" id="map-scroll"><div class="map-canvas" id="map-canvas"><div class="map-loading" id="map-loading"><span class="loading-leaf">❧</span><p>대한민국을 펼치는 중이에요</p></div><svg id="korea-map" viewBox="0 0 1200 1440" aria-label="대한민국 지역별 클릭 지도"></svg></div></div>
+          <div class="map-bottom"><div class="color-key"><span>응원이 쌓일수록</span><i class="color-gradient"></i><span>더 진한 연두</span></div><span>작은 지역은 확대 지도에서도 눌러 보세요 ↗</span></div>
+        </section>
+
+        <section id="ranking-panel" role="tabpanel" aria-labelledby="ranking-tab" hidden>
+          <div class="ranking-heading"><p class="eyebrow">TODAY’S LEADERBOARD</p><h2>오늘 가장 연두한 곳은?</h2><p>전국의 응원이 실시간으로 모이고 있어요.</p></div>
+          <div class="podium" id="podium"></div>
+          <div class="ranking-table-head"><span>순위 / 지역</span><span>오늘의 응원</span></div><div id="ranking-list" class="ranking-list"></div>
+          <p class="ranking-note">동점은 공동 순위로 표시해요. 매일 한국 시간 00:00에 초기화됩니다.</p>
+        </section>
+      </section>
+
+      <aside class="sidebar">
+        <section class="support-card"><div class="support-top"><span class="eyebrow">YOUR LITTLE CHEER</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 21V10M12 16C3 16 3 9 3 5c7 0 10 4 9 11ZM12 11C12 4 17 2 22 3c0 6-4 9-10 8Z"/></svg></div><p class="support-label" id="support-label">마음이 가는 지역을 골라요</p><h2 id="selected-name">어디든 좋아요.</h2><p class="selected-type" id="selected-type">지도에서 지역을 눌러 시작하세요</p><div class="support-score"><strong id="selected-count">0</strong><span>오늘의 응원</span></div><div class="support-meta"><span>현재 순위</span><b id="selected-rank">—</b></div><button class="cheer-button" id="cheer-button" disabled><span>지역을 선택해 주세요</span><span class="plus-icon">+</span></button><p class="support-hint">로그인 없이, 마음껏 응원해요</p><div class="support-leaf" aria-hidden="true"></div></section>
+
+        <section class="top-card"><div class="side-heading"><h2>지금, 선두는</h2><span class="live-pill"><span class="live-dot"></span> LIVE</span></div><div id="top-list" class="top-list"></div><button class="text-button" id="view-ranking">전체 랭킹 보기 <span>↗</span></button></section>
+
+        <section class="how-card"><span class="how-number">작은 클릭이 만드는 큰 변화</span><h2>우리 함께,<br>대한민국을 연두해요.</h2><div class="how-step"><span>01</span><p>좋아하는 지역을 눌러요</p></div><div class="how-step"><span>02</span><p>응원이 쌓이면 색이 진해져요</p></div><div class="how-step"><span>03</span><p>자정이 되면 다시 시작해요</p></div><div class="how-footer">어떤 지역이든, 몇 번이든. <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 20s-8-4.5-8-10a4 4 0 0 1 8-2 4 4 0 0 1 8 2c0 5.5-8 10-8 10Z"/></svg></div></section>
+      </aside>
+    </div>
+    <section class="bottom-banner"><div class="banner-icon" aria-hidden="true">↗</div><div><h2>혼자보다 함께할 때, 더 연두해져요.</h2><p>친구에게 우리 지역의 응원을 부탁해 보세요.</p></div><button id="share-button">친구에게 공유하기 <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M7 10 13 5m-6 5 6 5"/><circle cx="5" cy="10" r="2"/><circle cx="15" cy="4" r="2"/><circle cx="15" cy="16" r="2"/></svg></button></section>
+  </main>
+
+  <footer class="site-footer"><a class="footer-brand" href="/">연두해요.</a><p>한 번의 클릭으로, 조금 더 가까워지는 우리.</p><span>한국 시간 기준 · 매일 새롭게</span></footer>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <dialog id="how-dialog"><button class="dialog-close icon-button" aria-label="닫기">×</button><p class="eyebrow">HOW TO YEONDU</p><h2>작은 클릭, 함께하는 응원.</h2><p>지도에서 응원하고 싶은 지역을 누르세요. 한 번 누를 때마다 응원 수가 1씩 올라가고, 지역의 색이 흰색에서 점점 진한 연두색으로 바뀝니다.</p><p>모든 기기의 응원은 서버에 함께 저장되고 약 3초마다 반영돼요. 오늘의 랭킹과 지도 응원 수는 매일 한국 시간 자정에 새로 시작합니다.</p><p>전남과 광주는 전남광주통합특별시 하나로 집계합니다. 지도 속 이름은 읽기 쉬운 약칭이며, 지역을 선택하면 정식 명칭을 볼 수 있어요.</p><button class="cheer-button dialog-start">응원하러 가기 <span>↗</span></button></dialog>
+</body>
+</html>

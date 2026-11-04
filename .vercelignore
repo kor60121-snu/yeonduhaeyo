@@ -1,0 +1,8 @@
+.env*
+.git/
+.data/
+tests/
+test-results/
+scripts/build-map.py
+README.md
+DATA-SOURCES.md
